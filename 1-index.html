@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0b0b0d">
+<title>بلغمدي سبليت | Gym Log</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0b0b0d; --card:#141519; --card2:#1b1d23; --line:#26282f;
+  --txt:#f2f3f5; --mut:#9a9ea8; --volt:#c8f31d; --volt-dim:rgba(200,243,29,.14);
+  --red:#ff3b30;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);color:var(--txt);
+  font-family:'Cairo',sans-serif;
+  min-height:100vh;padding-bottom:90px;
+  background-image:
+    radial-gradient(1200px 400px at 50% -10%, rgba(200,243,29,.06), transparent 60%),
+    repeating-linear-gradient(45deg, transparent 0 22px, rgba(255,255,255,.012) 22px 24px);
+}
+.latin{font-family:'Oswald','Cairo',sans-serif;letter-spacing:.4px}
+header{
+  padding:22px 16px 10px;position:relative;overflow:hidden;
+}
+.brand{
+  display:flex;align-items:baseline;gap:10px;direction:ltr;justify-content:flex-start;
+}
+.brand .slash{color:var(--volt);font-weight:700}
+.brand h1{
+  font-family:'Oswald',sans-serif;font-size:30px;font-weight:700;text-transform:uppercase;
+  letter-spacing:1px;line-height:1;
+}
+.brand h1 span{color:var(--volt)}
+.subtitle{color:var(--mut);font-size:13px;margin-top:6px}
+.weekstrip{
+  display:flex;gap:6px;padding:14px 16px 4px;overflow-x:auto;scrollbar-width:none;
+}
+.weekstrip::-webkit-scrollbar{display:none}
+.daypill{
+  flex:0 0 auto;min-width:86px;padding:9px 10px;border-radius:12px;text-align:center;
+  background:var(--card);border:1px solid var(--line);color:var(--mut);
+  font-size:12px;font-weight:700;cursor:pointer;transition:.15s;
+}
+.daypill .en{display:block;font-family:'Oswald',sans-serif;font-size:14px;letter-spacing:.5px;color:var(--txt)}
+.daypill.rest .en{color:var(--mut)}
+.daypill.active{background:var(--volt);border-color:var(--volt);color:#0b0b0d}
+.daypill.active .en{color:#0b0b0d}
+.daypill.haslog{border-color:rgba(200,243,29,.5)}
+.dayhead{padding:16px 16px 6px;display:flex;align-items:center;justify-content:space-between}
+.dayhead h2{font-family:'Oswald',sans-serif;font-size:24px;text-transform:uppercase;letter-spacing:1px}
+.dayhead h2 small{font-family:'Cairo';font-size:13px;color:var(--mut);font-weight:700;margin-inline-start:8px;letter-spacing:0}
+.daytag{color:var(--volt);font-size:12px;font-weight:700}
+.card{
+  background:var(--card);border:1px solid var(--line);border-radius:16px;
+  margin:12px 14px;padding:14px;position:relative;overflow:hidden;
+}
+.card::before{
+  content:"";position:absolute;inset-inline-start:0;top:0;bottom:0;width:4px;background:var(--volt);opacity:.85;
+}
+.card-top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.exname{font-family:'Oswald',sans-serif;font-size:19px;font-weight:600;direction:ltr;text-align:left;letter-spacing:.4px;line-height:1.15}
+.meta{color:var(--mut);font-size:12.5px;margin-top:5px;font-weight:600}
+.meta b{color:var(--txt);direction:ltr;unicode-bidi:isolate;display:inline-block}
+.prchip{
+  flex:0 0 auto;background:var(--volt-dim);border:1px solid rgba(200,243,29,.35);color:var(--volt);
+  font-family:'Oswald',sans-serif;font-size:12px;font-weight:600;border-radius:8px;padding:4px 8px;direction:ltr;white-space:nowrap;
+}
+.altline{color:var(--mut);font-size:12px;margin-top:8px}
+.altline b{color:#c9cdd6}
+.notebtn{
+  margin-top:8px;background:none;border:none;color:var(--volt);font-family:'Cairo';
+  font-size:12.5px;font-weight:700;cursor:pointer;padding:2px 0;
+}
+.note{display:none;background:var(--card2);border-radius:10px;padding:10px 12px;margin-top:8px;
+  font-size:13px;line-height:1.7;color:#d7dae0;border:1px dashed var(--line)}
+.note.open{display:block}
+.lastline{
+  margin-top:10px;font-size:12.5px;color:var(--mut);display:flex;align-items:center;gap:6px;flex-wrap:wrap;
+}
+.lastline .vals{color:var(--txt);font-family:'Oswald',sans-serif;direction:ltr;letter-spacing:.3px}
+.diff{font-family:'Oswald',sans-serif;font-size:11.5px;padding:2px 7px;border-radius:7px;direction:ltr}
+.diff.up{background:rgba(200,243,29,.15);color:var(--volt)}
+.diff.down{background:rgba(255,59,48,.14);color:#ff6f67}
+.sets{margin-top:12px;display:flex;flex-direction:column;gap:8px}
+.setrow{
+  display:flex;align-items:center;gap:8px;background:var(--card2);
+  border:1px solid var(--line);border-radius:12px;padding:8px 10px;direction:ltr;
+}
+.setlbl{
+  font-family:'Oswald',sans-serif;font-weight:700;color:var(--volt);font-size:13px;
+  min-width:34px;text-align:center;
+}
+.setrow input{
+  flex:1;min-width:0;background:#0f1013;border:1px solid var(--line);border-radius:9px;
+  color:var(--txt);font-family:'Oswald',sans-serif;font-size:20px;font-weight:600;
+  padding:8px 6px;text-align:center;outline:none;transition:.12s;
+}
+.setrow input:focus{border-color:var(--volt);box-shadow:0 0 0 2px rgba(200,243,29,.18)}
+.setrow .x{color:var(--mut);font-family:'Oswald',sans-serif;font-size:14px}
+.unit{color:var(--mut);font-size:11px;width:26px}
+.card-actions{display:flex;gap:8px;margin-top:12px}
+.savebtn{
+  flex:1;background:var(--volt);color:#0b0b0d;border:none;border-radius:11px;
+  font-family:'Cairo';font-weight:800;font-size:15px;padding:11px;cursor:pointer;transition:.12s;
+}
+.savebtn:active{transform:scale(.97)}
+.savebtn.saved{background:var(--card2);color:var(--volt);border:1px solid rgba(200,243,29,.4)}
+.histbtn{
+  background:var(--card2);color:var(--mut);border:1px solid var(--line);border-radius:11px;
+  font-family:'Cairo';font-weight:700;font-size:13px;padding:11px 14px;cursor:pointer;
+}
+.history{display:none;margin-top:10px;border-top:1px dashed var(--line);padding-top:8px}
+.history.open{display:block}
+.hrow{
+  display:flex;justify-content:space-between;align-items:center;padding:7px 2px;
+  border-bottom:1px solid rgba(255,255,255,.04);font-size:12.5px;
+}
+.hrow:last-child{border-bottom:none}
+.hrow .hdate{color:var(--mut)}
+.hrow .hvals{font-family:'Oswald',sans-serif;direction:ltr;letter-spacing:.3px;font-size:13.5px}
+.restview{margin:30px 16px;text-align:center}
+.restview .big{font-family:'Oswald',sans-serif;font-size:42px;font-weight:700;color:var(--volt);letter-spacing:2px}
+.restview p{color:var(--mut);margin-top:10px;line-height:1.8;font-size:14px}
+.info-block{background:var(--card);border:1px solid var(--line);border-radius:14px;margin:12px 14px;padding:16px}
+.info-block h3{color:var(--volt);font-size:16px;margin-bottom:10px}
+.info-block li{font-size:13.5px;line-height:1.9;color:#d7dae0;margin-inline-start:18px;margin-bottom:6px}
+.info-block .latin-list{direction:ltr;text-align:left}
+.info-block .latin-list li{font-family:'Oswald',sans-serif;letter-spacing:.4px;font-size:14px}
+.toast{
+  position:fixed;bottom:18px;left:50%;transform:translateX(-50%) translateY(80px);
+  background:var(--volt);color:#0b0b0d;font-weight:800;font-size:14px;
+  padding:11px 22px;border-radius:12px;transition:.25s;z-index:50;box-shadow:0 8px 30px rgba(200,243,29,.25);
+}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.footnote{text-align:center;color:#55585f;font-size:11px;margin-top:26px;padding:0 20px;line-height:1.8}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">
+    <h1>GYM<span>//</span>LOG</h1>
+  </div>
+  <div class="subtitle">Belghamdi Splits — Upper / Lower &nbsp;•&nbsp; سجل أوزانك وعداتك</div>
+</header>
+<nav class="weekstrip" id="weekstrip"></nav>
+<div class="dayhead" id="dayhead"></div>
+<main id="app"></main>
+<div class="footnote">الأرقام المحفوظة بتفضل على جهازك ده (متصفحك) — بتتسجل محلياً ومش بتترفع لأي سيرفر.</div>
+<div class="toast" id="toast">اتحفظ ✅</div>
+<script>
+const PROGRAM = {"days": [{"id": "upper-a", "name": "Upper A", "ar": "جزء علوي أ", "tag": "صدر • ضهر • ذراع", "exercises": [{"name": "Smith High Incline Press", "warm": "1~2", "sets": 2, "reps": "4~6", "rest": "3~5", "alt": "DB High Incline Press", "note": "ضم ايدك لجوه عشان تحاكي اتجاه الياف الصدر العالي، بلاش تفتح كوعك 90 درجه", "seed": [["40", "6"], ["30", "6"]]}, {"name": "Machine Wide Grip Lat Pulldown", "warm": "1~3", "sets": 2, "reps": "6~8", "rest": "3~5", "alt": "Cable Wide Grip Lat Pulldown (زاويه عاليه فوق 45)", "note": "ركز ف مسار كوعك وانك بتضم كتافك علي بعض، مش بتسحب علي ضهرك العلوي", "seed": [["120", "8"], ["100", "6"]]}, {"name": "Chest Press Machine", "warm": "1~2", "sets": 1, "reps": "6~10", "rest": "3~5", "alt": "DB Flat Press / Smith Flat Press", "note": "", "seed": [["40", "6"]]}, {"name": "T Bar Row", "warm": "1~2", "sets": 1, "reps": "5~7", "rest": "3~5", "alt": "Incline DB Row / Cable Row", "note": "افتح كيعانك لبره علي قد متقدر، حاول تقرب من زايه ال90 علي حسب راحه كتفك ومرونتك", "seed": [["60", "8"]]}, {"name": "SA Tricep Pushdown", "warm": "0", "sets": 2, "reps": "6~10", "rest": "3~5", "alt": "Double Rope Pushdown", "note": "متدخلش الكور بزياده وتتمرجح وتحرك كتفك، هي فرد للكوع فقط", "seed": [["30", "8"], ["30", "6"]]}, {"name": "DB Preacher Curl", "warm": "0", "sets": 2, "reps": "6~10", "rest": "3~5", "alt": "Face Away Curl / DB Curls", "note": "بلاش مدي حركي زياده من الكتف ومتمرجحش جسمك، خلي الحركه كلها جايه من كوعك", "seed": [["15", "7"], ["15", "5"]]}, {"name": "SA Rear Delt Flies", "warm": "0", "sets": 1, "reps": "6~10", "rest": "3~5", "alt": "Reverse Pec Dec", "note": "فك لوحين كتفك من قبل متبدا الحركه وحاول تركز علي كتفك الخلفي", "seed": [["15", "8"]]}, {"name": "Reverse Grip Curls", "warm": "0", "sets": 1, "reps": "6~10", "rest": "3~5", "alt": "DB Reverse Curl / Barbell Reverse Curl", "note": "تقدر تغيير القبضات براحتك علي حسب الي يريحك، المهم كله نفس الاداء", "seed": [["40", "10"]]}]}, {"id": "lower-a", "name": "Lower A", "ar": "جزء سفلي أ", "tag": "رجل • سمانه • ساعد", "exercises": [{"name": "Machine Lateral Raises", "warm": "1~2", "sets": 2, "reps": "6~8", "rest": "3~5", "alt": "Cable Lateral Raises / DB Lateral Raises", "note": "حاول علي قد متقدر الحركه تبقي طالعه من كتفك لوحده مش جسمك كله", "seed": [["4", "6"], ["4", "6"]]}, {"name": "Leg Press Calf Raises", "warm": "1~2", "sets": 2, "reps": "5~7", "rest": "3~5", "alt": "Smith Calf Raises", "note": "اي تمرينه ركبتك مفروده، حتي لو مسكت دامبل ناحيه الرجل الي بتلعب ووقفت علي ستيب", "seed": [["8", "10"], ["8", "10"]]}, {"name": "Hack Squat", "warm": "1~3", "sets": 1, "reps": "5~8", "rest": "3~5", "alt": "Smith Squat / Leg Press", "note": "120 درجه من ثني الركبه يكفي لاستهداف الكوادز، بس حاول تنزل للاخر", "seed": [["120", "6"]]}, {"name": "Seated Leg Curl", "warm": "1~2", "sets": 1, "reps": "8~12", "rest": "3~5", "alt": "Lying Leg Curl", "note": "لو الجهازين مش موجودين العبه SLDL", "seed": []}, {"name": "Leg Extenstion", "warm": "1~2", "sets": 1, "reps": "8~12", "rest": "3~5", "alt": "", "note": "لو الجهاز مش موجود العب BANDED LEG EXTENSTION", "seed": []}, {"name": "Hip Adduction", "warm": "1~2", "sets": 1, "reps": "6~8", "rest": "3~5", "alt": "Cable Hip Adduction", "note": "ثبت نفسك بالمقبض كويس ومتحركش نفسك ع الجهاز", "seed": [["7", "10"]]}, {"name": "Wrist Curls", "warm": "0", "sets": 1, "reps": "6~10", "rest": "3~5", "alt": "", "note": "فط صوابعك تحت ف الاستطاله واختار وزن يخليك تعمل انقباض كامل", "seed": [["30", "10"]]}]}, {"id": "upper-b", "name": "Upper B", "ar": "جزء علوي ب", "tag": "صدر • ضهر • ذراع", "exercises": [{"name": "Chest Press Machine", "warm": "1~2", "sets": 2, "reps": "6~8", "rest": "3~5", "alt": "DB Flat Press / Smith Flat Press", "note": "لو الجيم يسمح تلعب ع الكيبل العب، لو الجهاز مش كويس", "seed": [["40", "8"], ["40", "7"]]}, {"name": "T Bar Row", "warm": "1~2", "sets": 1, "reps": "5~7", "rest": "3~5", "alt": "Incline DB Row / Cable Row", "note": "افتح كيعانك لبره علي قد متقدر، حاول تقرب من زايه ال90 علي حسب راحه كتفك ومرونتك", "seed": [["60", "7"]]}, {"name": "Incline Chest Press Machine", "warm": "1~2", "sets": 1, "reps": "6~10", "rest": "3~5", "alt": "DB Incline Press / Smith Incline Press", "note": "زاويه عاديه 30. لو الجيم يسمح تلعب ع الكيبل العب، لو الجهاز مش كويس", "seed": [["40", "7"]]}, {"name": "SA Lat Row", "warm": "0", "sets": 1, "reps": "6~10", "rest": "3~5", "alt": "Cable SA Lat Row / DB SA Lat Row", "note": "بلاش تقعد تلف حوالين نفسك، والتزم بثبات جسمك علي مدار الحركه", "seed": [["40", "7"]]}, {"name": "Face Away Curl", "warm": "0", "sets": 1, "reps": "6~10", "rest": "3~5", "alt": "DB Preacher Curl / DB Curls", "note": "بلاش مدي حركي زياده من الكتف ومتمرجحش جسمك، خلي الحركه كلها جايه من كوعك", "seed": [["25", "7"]]}, {"name": "Overhead Extenstion", "warm": "0", "sets": 2, "reps": "6~10", "rest": "3~5", "alt": "DB Skull Crusher", "note": "لو كوعك وجعك العب بوش داون عادي", "seed": [["20", "7"], ["20", "4"]]}, {"name": "Cable Shrugs", "warm": "1", "sets": 1, "reps": "6~8", "rest": "3~5", "alt": "Smith Kelso Shruigs / DB Kelso Shrugs", "note": "ترابيس", "seed": []}]}, {"id": "lower-b", "name": "Lower B", "ar": "جزء سفلي ب", "tag": "رجل • بطن", "exercises": [{"name": "Cable Lateral Raises", "warm": "1~2", "sets": 2, "reps": "5~8", "rest": "3~5", "alt": "DB Lateral Raises", "note": "", "seed": [["25", "6"], ["20", "6"]]}, {"name": "SLDL", "warm": "1~3", "sets": 1, "reps": "5~7", "rest": "3~5", "alt": "RDL / Hip Extenstion", "note": "لو مرونتك متسمحش لل sldl تقدر تتني ركبتك وتتمرن RDL", "seed": []}, {"name": "Seated Leg Curl", "warm": "1~2", "sets": 1, "reps": "8~12", "rest": "3~5", "alt": "Lying Leg Curl", "note": "لو الجهازين مش موجودين العبه SLDL", "seed": []}, {"name": "Leg Extenstion", "warm": "1~2", "sets": 1, "reps": "8~12", "rest": "3~5", "alt": "", "note": "لو الجهاز مش موجود العب BANDED LEG EXTENSTION", "seed": []}, {"name": "Hip Adduction", "warm": "1~2", "sets": 1, "reps": "6~8", "rest": "3~5", "alt": "Cable Hip Adduction", "note": "ثبت نفسك بالمقبض كويس ومتحركش نفسك ع الجهاز", "seed": [["90", "13"]]}, {"name": "Lat Pulldown Crunches", "warm": "0", "sets": 1, "reps": "6~10", "rest": "3~5", "alt": "Cable Crunch", "note": "ركز ان الحركه تبقي طالعه من تني وفرد عمودك الفقري، مش ضهرك كله بيتحرك", "seed": []}]}], "week": ["upper-a", "lower-a", "rest", "upper-b", "lower-b", "rest", "rest"]};
+const LS_KEY = "belghamdi-gym-log-v1";
+
+function loadLog(){
+  try{ return JSON.parse(localStorage.getItem(LS_KEY)) || {}; }catch(e){ return {}; }
+}
+function saveLog(l){ localStorage.setItem(LS_KEY, JSON.stringify(l)); }
+
+// seed baseline values from the sheet on first run
+function ensureSeed(){
+  let log = loadLog();
+  if(log.__seeded) return;
+  PROGRAM.days.forEach(day=>{
+    day.exercises.forEach((ex,i)=>{
+      if(ex.seed && ex.seed.length){
+        const key = day.id+"-"+i;
+        if(!log[key] || !log[key].length){
+          log[key] = [{d:"sheet", sets: ex.seed.map(s=>({w:s[0],r:s[1]}))}];
+        }
+      }
+    });
+  });
+  log.__seeded = true;
+  saveLog(log);
+}
+ensureSeed();
+
+const weekstrip = document.getElementById("weekstrip");
+const dayhead = document.getElementById("dayhead");
+const app = document.getElementById("app");
+const toast = document.getElementById("toast");
+
+let current = "upper-a";
+(function(){const h=(location.hash||"").slice(1); if(h && (["rest","info"].includes(h) || PROGRAM.days.some(d=>d.id===h))) current=h;})();
+
+function fmtDate(iso){
+  if(iso==="sheet") return "من الجدول";
+  try{
+    const d = new Date(iso+"T12:00:00");
+    return d.toLocaleDateString("ar-EG",{weekday:"short",day:"numeric",month:"short"});
+  }catch(e){ return iso; }
+}
+function todayISO(){
+  const d = new Date();
+  return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+}
+function setsText(sets){
+  return sets.map(s=> (s.w||"—")+"×"+(s.r||"—")).join("  ,  ");
+}
+function num(v){ const n = parseFloat(v); return isNaN(n)?null:n; }
+
+function renderStrip(){
+  const log = loadLog();
+  weekstrip.innerHTML = "";
+  PROGRAM.week.forEach((id,idx)=>{
+    const b = document.createElement("button");
+    b.className = "daypill"+(id==="rest"?" rest":"")+(id===current?" active":"");
+    if(id!=="rest"){
+      const has = Object.keys(log).some(k=>k.startsWith(id+"-") && Array.isArray(log[k]) && log[k].some(e=>e.d!=="sheet"));
+      if(has) b.classList.add("haslog");
+      const day = PROGRAM.days.find(d=>d.id===id);
+      b.innerHTML = '<span class="en">'+day.name+'</span>'+day.ar;
+    }else{
+      b.innerHTML = '<span class="en">REST</span>راحة';
+    }
+    b.onclick = ()=>{ current = id; render(); window.scrollTo({top:0}); };
+    weekstrip.appendChild(b);
+  });
+  const info = document.createElement("button");
+  info.className = "daypill"+(current==="info"?" active":"");
+  info.innerHTML = '<span class="en">INFO</span>تعليمات';
+  info.onclick = ()=>{ current="info"; render(); window.scrollTo({top:0}); };
+  weekstrip.appendChild(info);
+}
+
+function render(){
+  renderStrip();
+  app.innerHTML = "";
+  dayhead.innerHTML = "";
+  if(current==="rest"){
+    dayhead.innerHTML = "<h2>REST DAY</h2>";
+    app.innerHTML = '<div class="restview"><div class="big latin">RECOVER</div>'+
+      '<p>يوم راحة. النوم والأكل والمشي أهم حاجة النهارده.<br>لو هتتمرن أكتر من 4 مرات في الأسبوع، عيد الجدول بعد يوم راحة واحد بس.</p></div>';
+    return;
+  }
+  if(current==="info"){ renderInfo(); return; }
+  const day = PROGRAM.days.find(d=>d.id===current);
+  dayhead.innerHTML = "<h2>"+day.name+" <small>"+day.ar+"</small></h2><div class='daytag'>"+day.tag+"</div>";
+  const log = loadLog();
+  day.exercises.forEach((ex,i)=>{
+    const key = day.id+"-"+i;
+    const hist = (log[key]||[]).slice();
+    const last = hist.length? hist[hist.length-1] : null;
+    const prev = hist.length>1? hist[hist.length-2] : null;
+
+    const card = document.createElement("div");
+    card.className = "card";
+
+    // best weight chip
+    let best = null;
+    hist.forEach(h=>h.sets.forEach(s=>{const n=num(s.w); if(n!==null && (best===null||n>best)) best=n;}));
+    const chip = best!==null? '<div class="prchip">MAX '+best+' KG</div>' : "";
+
+    let diffHtml = "";
+    if(last && prev && last.d!=="sheet"){
+      const lw=num(last.sets[0]&&last.sets[0].w), pw=num(prev.sets[0]&&prev.sets[0].w);
+      const lr=num(last.sets[0]&&last.sets[0].r), pr=num(prev.sets[0]&&prev.sets[0].r);
+      if(lw!==null&&pw!==null&&lw!==pw){
+        diffHtml = '<span class="diff '+(lw>pw?"up":"down")+'">'+(lw>pw?"+":"")+(lw-pw)+" kg</span>";
+      }else if(lr!==null&&pr!==null&&lr!==pr){
+        diffHtml = '<span class="diff '+(lr>pr?"up":"down")+'">'+(lr>pr?"+":"")+(lr-pr)+" rep</span>";
+      }
+    }
+
+    let setsHtml = "";
+    for(let s=0;s<ex.sets;s++){
+      const lw = last&&last.sets[s]? (last.sets[s].w||"") : "";
+      const lr = last&&last.sets[s]? (last.sets[s].r||"") : "";
+      setsHtml += '<div class="setrow"><span class="setlbl">S'+(s+1)+'</span>'+
+        '<input class="w" inputmode="decimal" placeholder="0" value="'+lw+'"><span class="unit">kg</span>'+
+        '<span class="x">×</span>'+
+        '<input class="r" inputmode="numeric" placeholder="0" value="'+lr+'"><span class="unit">عدة</span></div>';
+    }
+
+    card.innerHTML =
+      '<div class="card-top"><div><div class="exname">'+ex.name+'</div>'+
+      '<div class="meta"><b class="latin">'+ex.sets+' × '+ex.reps+'</b> مجاميع × ععدات'+
+      (ex.warm!=="0"? ' • تسخين '+ex.warm : '')+
+      ' • راحة '+ex.rest+' د</div></div>'+chip+'</div>'+
+      (ex.alt? '<div class="altline">البديل: <b class="latin">'+ex.alt+'</b></div>' : '')+
+      (ex.note? '<button class="notebtn">💡 تعليمات الأداء</button><div class="note">'+ex.note+'</div>' : '')+
+      '<div class="lastline">'+(last? 'آخر تسجيل: <span class="vals">'+setsText(last.sets)+'</span> ('+fmtDate(last.d)+') '+diffHtml : 'لسه مفيش تسجيل — دي أول مرة')+'</div>'+
+      '<div class="sets">'+setsHtml+'</div>'+
+      '<div class="card-actions"><button class="savebtn">حفظ</button>'+
+      (hist.length? '<button class="histbtn">السجل ('+hist.length+')</button>' : '')+'</div>'+
+      (hist.length? '<div class="history">'+hist.slice().reverse().slice(0,12).map(h=>
+        '<div class="hrow"><span class="hdate">'+fmtDate(h.d)+'</span><span class="hvals">'+setsText(h.sets)+'</span></div>'
+      ).join("")+'</div>' : '');
+
+    const nb = card.querySelector(".notebtn");
+    if(nb) nb.onclick = ()=> card.querySelector(".note").classList.toggle("open");
+    const hb = card.querySelector(".histbtn");
+    if(hb) hb.onclick = ()=> card.querySelector(".history").classList.toggle("open");
+
+    const saveBtn = card.querySelector(".savebtn");
+    saveBtn.onclick = ()=>{
+      const ws = [...card.querySelectorAll("input.w")].map(x=>x.value.trim());
+      const rs = [...card.querySelectorAll("input.r")].map(x=>x.value.trim());
+      const sets = ws.map((w,idx)=>({w, r:rs[idx]||""}));
+      if(!sets.some(s=>s.w||s.r)){ showToast("اكتب وزن أو عدة الأول ✍️"); return; }
+      let log2 = loadLog();
+      const arr = log2[key]||[];
+      const t = todayISO();
+      if(arr.length && arr[arr.length-1].d===t){ arr[arr.length-1].sets = sets; }
+      else { arr.push({d:t, sets}); }
+      log2[key]=arr; saveLog(log2);
+      saveBtn.textContent = "اتحفظ ✓"; saveBtn.classList.add("saved");
+      showToast("اتحفظ ✅");
+      setTimeout(render, 700);
+    };
+
+    app.appendChild(card);
+  });
+}
+
+function renderInfo(){
+  dayhead.innerHTML = "<h2>INFO <small>تعليمات البرنامج</small></h2>";
+  app.innerHTML =
+  '<div class="info-block"><h3>تعليمات مهمة قبل ما تبدأ</h3><ul>'+
+  '<li>خد بالك من التسخين وافهمه كويس عشان تبقي جاهز انك تأدي تمرينك بأعلى كفاءة.</li>'+
+  '<li>الفشل العضلي هو انك متكنش قادر تأدي التمرين بمدى حركي كامل بأداء قريب جداً لأول عدة — لو عارف ان العدة الجايه مش هتبقى كاملة متحاولش فيها.</li>'+
+  '<li>متزودش مجاميع ولا تعدل تمارين ولا تبدل ترتيب قبل 12 أسبوع — الشغل كله زيادة تدريجية في الأحمال (عدات أو وزن).</li>'+
+  '</ul></div>'+
+  '<div class="info-block"><h3>WARM UP — مجاميع التسخين</h3><ul>'+
+  '<li>تمرين مش تقيل (مجموعة واحدة): حوالي 60% من وزنك الفعلي، 3 لـ 6 عدات.</li>'+
+  '<li>تمرين متوسط (مجموعتين): الأولى ~50% من الوزن لـ 3-6 عدات، التانية 75-80% لـ 3 عدات.</li>'+
+  '<li>تمرين تقيل (2-4 مجاميع): ~50% لـ 3-6 عدات، بعدين 75-80% لـ 3 عدات، بعدين 85-90% لـ 1-3 عدات.</li>'+
+  '</ul></div>'+
+  '<div class="info-block"><h3>تجهيزات (أقل من 10 دقايق)</h3><ul class="latin-list">'+
+  '<li>10 reps / side — Pallof Press</li>'+
+  '<li>10 reps / side — Pallof Rotation</li>'+
+  '<li>10 reps — External Rotation</li>'+
+  '<li>10 reps — Scapula Push Plus</li>'+
+  '</ul></div>'+
+  '<div class="info-block"><h3>الأسبوع</h3><ul>'+
+  '<li>Upper A → Lower A → راحة → Upper B → Lower B → راحة → راحة</li>'+
+  '<li>الراحة بين المجاميع 3~5 دقايق زي ما مكتوب عند كل تمرين.</li>'+
+  '</ul></div>';
+}
+
+let toastTimer;
+function showToast(msg){
+  toast.textContent = msg;
+  toast.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>toast.classList.remove("show"), 1800);
+}
+
+render();
+</script>
+</body>
+</html>
